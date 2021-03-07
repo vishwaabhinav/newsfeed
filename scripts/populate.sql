@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS user_projects;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS announcements;
+DROP VIEW IF EXISTS newsfeed;
 
 
 CREATE TABLE users (
@@ -41,6 +42,23 @@ CREATE TABLE announcements (
     updated_ts  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
 );
 
+Create view newsfeed as
+Select * from
+(Select 
+id, name, avatar_url as dp, NULL as announcement_title, NULL as announcement_body, fellowship, 'user' as type, created_ts, updated_ts
+from users 
+where 1 
+	union all 
+select 
+id, name, icon_url as dp, NULL as announcement_title, NULL as announcement_body, NULL as fellowship,  'project' as type, created_ts, updated_ts
+from projects 
+where 1 
+	union all 
+select 
+id, NULL as name, NULL as dp, title as announcement_title, body as announcement_body,  fellowship, 'announcement' as type, created_ts, updated_ts
+from announcements 
+where 1) as newsfeed
+Order by created_ts DESC;
 
 INSERT INTO users
 (id, created_ts, updated_ts, avatar_url, fellowship, name, bio)

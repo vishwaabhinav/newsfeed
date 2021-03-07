@@ -1,5 +1,5 @@
 import path from 'path'
-import {Database} from 'sqlite3'
+import { Database } from 'sqlite3'
 
 class AsyncDatabase {
   db: Database;
@@ -58,6 +58,18 @@ export type AnnouncementRow = {
   fellowship: "founders" | "angels" | "writers" | "all";
   title: string;
   body: string;
+  created_ts: Date;
+  updated_ts: Date;
+}
+
+export type FeedRow = {
+  id: number;
+  name: string;
+  dp: string;
+  announcement_title: string;
+  announcement_body: string,
+  fellowship: string;
+  type: string;
   created_ts: Date;
   updated_ts: Date;
 }
