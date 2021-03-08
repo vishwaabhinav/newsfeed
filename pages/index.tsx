@@ -4,7 +4,9 @@ import { useQuery, gql } from '@apollo/client'
 import Feed from 'components/Feed'
 import { FeedRow } from 'graphql/db'
 import { ColumnLeft, ColumnRight, Columns } from 'components/Card'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import debounce from 'lodash.debounce'
+import moment from 'moment'
 
 const query = gql`
   query feed($lastCreatedAt: String!, $fellowship: String!) {
@@ -34,18 +36,37 @@ type QueryVars = {
 export default function Home() {
 
   let [fellowship, setFellowship] = useState('founders')
+  let [feed, setFeed] = useState<FeedRow[]>([])
+  let [loading, setLoading] = useState(true)
+  let [lastCreatedAt, setLastCreatedAt] = useState(moment().format('YYYY-MM-DD hh:mm'))
 
-  const { data, error, loading } = useQuery<QueryData, QueryVars>(
+  let { error } = useQuery<QueryData, QueryVars>(
     query,
     {
-      variables: { lastCreatedAt: '2021-02-14 17:23', fellowship },
+      variables: { lastCreatedAt, fellowship },
+      onCompleted: (data) => {
+        setFeed([...feed, ...(data?.feed || [])])
+        setLoading(false)
+      }
     },
   )
 
-  const feed = data?.feed
+
   if (error) {
     return <p>Error</p>
   }
+
+  useEffect(() => {
+    window.onscroll = debounce(function () {
+      if (
+        window.innerHeight + document.documentElement.scrollTop
+        === document.documentElement.offsetHeight
+      ) {
+        console.log(feed, loading, lastCreatedAt, fellowship, feed[feed.length - 1].created_ts)
+        setLastCreatedAt(feed[feed.length - 1].created_ts)
+      }
+    }, 100)
+  }, [feed])
 
   return (
     <Layout>
@@ -55,7 +76,11 @@ export default function Home() {
       <Columns>
         <ColumnLeft> <h2>On Deck </h2></ColumnLeft>
         <ColumnRight>
-          <select defaultValue={fellowship} onChange={evt => setFellowship(evt.target.value)}>
+          <select defaultValue={fellowship} onChange={evt => {
+            setLastCreatedAt(moment().format('YYYY-MM-DD hh:mm'))
+            setFeed([])
+            setFellowship(evt.target.value)
+          }}>
             <option value="founders">Founders</option>
             <option value="angels">Angels</option>
             <option value="writers">Writers</option>

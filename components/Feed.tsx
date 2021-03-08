@@ -53,12 +53,14 @@ function getFeedCardContent(feedrow: FeedRow): JSX.Element {
         case "user":
             return (
                 <p>
-                    <Link href={"/users/" + feedrow.id}>{feedrow.name}</Link> just joined {feedrow.fellowship} fellowship
+                    <Link href={"/users/" + feedrow.id}>{feedrow.name}</Link> just joined <b>{feedrow.fellowship}</b> fellowship
                 </p>
             )
         case "project":
             return (
-                <p> <Link href={"/projects/" + feedrow.id}>{feedrow.name}</Link> just got announced {feedrow.fellowship}</p>
+                <p>
+                    Project <Link href={"/projects/" + feedrow.id}>{feedrow.name}</Link> just got announced {feedrow.fellowship}
+                </p>
             )
         case "announcement":
             return (

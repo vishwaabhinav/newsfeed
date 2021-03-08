@@ -70,6 +70,6 @@ export type FeedRow = {
   announcement_body: string,
   fellowship: string;
   type: string;
-  created_ts: Date;
-  updated_ts: Date;
+  created_ts: string;
+  updated_ts: string;
 }
