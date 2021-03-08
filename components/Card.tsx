@@ -4,7 +4,8 @@ const Card = styled.div`
   padding: 1.5rem;
   border: 1px solid #eaeaea;
   border-radius: 10px;
-  background: ${props => props.className === "user" ? "#e0e0e0" : "white"}
+  background: ${props => props.className === "user" ? "#eaeaea" : "white"};
+  margin-top: 0.2rem;
 `
 
 export default Card

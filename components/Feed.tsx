@@ -1,6 +1,5 @@
 import { FeedRow } from 'graphql/db'
-import Link from 'next/link'
-import Card, { SecondaryAvatar, SecondaryColumnLeft, SecondaryColumnRight, SecondaryContainer } from './Card'
+import FeedCard from './FeedCard'
 
 type Props = {
     feed: FeedRow[] | undefined
@@ -10,16 +9,7 @@ type Props = {
 export default function Feed({ feed, isLoading }: Props) {
     if (isLoading || !feed) {
         return (
-            <Card>
-                <SecondaryContainer>
-                    <SecondaryColumnLeft>
-                        <SecondaryAvatar src="https://avatars.dicebear.com/api/bottts/Loading.svg" />
-                    </SecondaryColumnLeft>
-                    <SecondaryColumnRight>
-                        <p>Loading...</p>
-                    </SecondaryColumnRight>
-                </SecondaryContainer>
-            </Card>
+            <FeedCard isLoading></FeedCard>
         )
     }
 
@@ -27,59 +17,9 @@ export default function Feed({ feed, isLoading }: Props) {
         <>
             {feed.map((feedrow, i) => {
                 return (
-                    <Card key={`${i}-${feedrow.type}`} className={feedrow.type}>
-                        <SecondaryContainer className={feedrow.type}>
-                            {feedrow.type !== "announcement" &&
-                                <SecondaryColumnLeft>
-                                    <SecondaryAvatar src={feedrow.dp}></SecondaryAvatar>
-                                </SecondaryColumnLeft>
-                            }
-                            <SecondaryColumnRight>
-                                {getFeedCardContent(feedrow)}
-                            </SecondaryColumnRight>
-                            {feedrow.type !== "announcement" && <SecondaryColumnRight className="right-align">
-                                {feedrow.created_ts}
-                            </SecondaryColumnRight>}
-                        </SecondaryContainer>
-                    </Card>
+                    <FeedCard feedRow={feedrow}></FeedCard>
                 )
             })}
         </>
     )
-}
-
-function getFeedCardContent(feedrow: FeedRow): JSX.Element {
-    switch (feedrow.type) {
-        case "user":
-            return (
-                <p>
-                    <Link href={"/users/" + feedrow.id}>{feedrow.name}</Link> just joined <b>{feedrow.fellowship}</b> fellowship
-                </p>
-            )
-        case "project":
-            return (
-                <p>
-                    Project <Link href={"/projects/" + feedrow.id}>{feedrow.name}</Link> just got announced {feedrow.fellowship}
-                </p>
-            )
-        case "announcement":
-            return (
-                <div>
-                    <SecondaryContainer>
-                        <SecondaryColumnLeft>
-                            <h3>Announcement [{feedrow.fellowship}]</h3>
-                        </SecondaryColumnLeft>
-                        <SecondaryColumnRight className="right-align">
-                            {feedrow.created_ts}
-                        </SecondaryColumnRight>
-                    </SecondaryContainer>
-                    <h4>{feedrow.announcement_title}</h4>
-                    <div>{feedrow.announcement_body}</div>
-                </div>
-            )
-        default:
-            return (
-                <p>Dummy Node</p>
-            )
-    }
 }
