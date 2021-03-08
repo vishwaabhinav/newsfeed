@@ -27,7 +27,7 @@ export default function Feed({ feed, isLoading }: Props) {
         <>
             {feed.map((feedrow, i) => {
                 return (
-                    <Card key={i} className={feedrow.type}>
+                    <Card key={`${i}-${feedrow.type}`} className={feedrow.type}>
                         <SecondaryContainer className={feedrow.type}>
                             {feedrow.type !== "announcement" &&
                                 <SecondaryColumnLeft>

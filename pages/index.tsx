@@ -62,7 +62,6 @@ export default function Home() {
         window.innerHeight + document.documentElement.scrollTop
         === document.documentElement.offsetHeight
       ) {
-        console.log(feed, loading, lastCreatedAt, fellowship, feed[feed.length - 1].created_ts)
         setLastCreatedAt(feed[feed.length - 1].created_ts)
       }
     }, 100)
